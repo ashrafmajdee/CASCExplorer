@@ -102,9 +102,8 @@ namespace CASCExplorer
 
             IProgress<int> progress = new Progress<int>(progressCallback);
 
-            await Task.Run(() =>
-            {
-                var installFiles = _casc.Install.GetEntriesByTag("Windows");
+            await Task.Run(() => {
+                var installFiles = _casc.Install.GetEntries("Windows", "x86_64", "US");
                 var build = _casc.Config.BuildName;
 
                 int numFiles = installFiles.Count();
