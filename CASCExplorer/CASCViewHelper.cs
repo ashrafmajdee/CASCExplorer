@@ -103,18 +103,23 @@ namespace CASCExplorer
             IProgress<int> progress = new Progress<int>(progressCallback);
 
             await Task.Run(() => {
-                var installFiles = _casc.Install.GetEntries("Windows", "x86_64", "US");
-                var build = _casc.Config.BuildName;
+                string[] platforms = ["Windows", "OSX"];
 
-                int numFiles = installFiles.Count();
-                int numDone = 0;
-
-                foreach (var file in installFiles)
+                foreach (string platform in platforms)
                 {
-                    if (_casc.Encoding.GetEntry(file.MD5, out EncodingEntry enc))
-                        _casc.SaveFileTo(enc.Keys[0], Path.Combine("data", build, "install_files"), file.Name);
+                    var installFiles = _casc.Install.GetEntriesByTags(platform, "x86_64", "US");
+                    var build = _casc.Config.BuildName;
 
-                    progress.Report((int)(++numDone / (float)numFiles * 100));
+                    int numFiles = installFiles.Count();
+                    int numDone = 0;
+
+                    foreach (var file in installFiles)
+                    {
+                        if (_casc.Encoding.GetEntry(file.MD5, out EncodingEntry enc))
+                            _casc.SaveFileTo(enc.Keys[0], Path.Combine("data", build, $"{platform}_install_files"), file.Name);
+
+                        progress.Report((int)(++numDone / (float)numFiles * 100));
+                    }
                 }
             });
         }
