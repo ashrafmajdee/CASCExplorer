@@ -5,7 +5,9 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace CASCExplorer
@@ -85,6 +87,24 @@ namespace CASCExplorer
             useLVToolStripMenuItem.Checked = Settings.Default.OverrideArchive;
             useHighResTexturesToolStripMenuItem.Checked = Settings.Default.PreferHighResTextures;
             tsmShowPreview.Checked = Settings.Default.PreviewVisible;
+
+            var args = Environment.GetCommandLineArgs();
+
+            if (args.Length > 2)
+            {
+                for (int i = 1; i < args.Length - 1; i++)
+                {
+                    if (args[i] == "-bco" && File.Exists(args[i + 1]))
+                        CASCConfig.BuildConfigOverride = args[i + 1];
+                    else if (args[i] == "-bcko" && Regex.IsMatch(args[i + 1], "^[a-fA-F0-9]{32}$"))
+                        CASCConfig.BuildConfigKeyOverride = args[i + 1];
+
+                    if (args[i] == "-cco" && File.Exists(args[i + 1]))
+                        CASCConfig.CDNConfigOverride = args[i + 1];
+                    else if (args[i] == "-ccko" && Regex.IsMatch(args[i + 1], "^[a-fA-F0-9]{32}$"))
+                        CASCConfig.CDNConfigKeyOverride = args[i + 1];
+                }
+            }
         }
 
         private void ViewHelper_OnStorageChanged()
