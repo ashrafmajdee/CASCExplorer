@@ -103,6 +103,9 @@ namespace CASCExplorer
                         CASCConfig.CDNConfigOverride = args[i + 1];
                     else if (args[i] == "-ccko" && Regex.IsMatch(args[i + 1], "^[a-fA-F0-9]{32}$"))
                         CASCConfig.CDNConfigKeyOverride = args[i + 1];
+
+                    if (args[i] == "-cdnhost")
+                        CASCConfig.CDNHostOverride = args[i + 1];
                 }
             }
         }
